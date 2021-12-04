@@ -1,0 +1,10 @@
+= Notes
+:sectnums:
+:toc: left
+:toclevels: 3
+
+:toc!:
+
+== These are some sample notes
+* Sample
+* Sample 2
