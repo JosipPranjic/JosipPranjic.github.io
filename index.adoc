@@ -5,6 +5,19 @@
 
 :toc!:
 
-== These are some sample notes
-* Sample
-* Sample 2
+== Java
+
+=== Language
+
+=== Tools
+
+==== Java Flight Recorder/Java Mission Control
+
+Useful for capturing low level events from the JVM itself, as well as the application by way of custom JFR events. Boasts minimal impact on the runtime thus allowing it to be used continually in production.
+
+Events can be captured in a singular file dump or streamed (TODO: which java version introduced this?)
+
+Event dump can be viewed in Java Mission Control, which is a GUI application.
+
+* TODO: commands for capturing
+* TODO: jfr links
