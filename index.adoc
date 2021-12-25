@@ -11,6 +11,18 @@
 
 === Tools
 
+==== Maven
+
+Speeding up maven:
+
+https://blog.frankel.ch/faster-maven-builds/1/[Frankel blog 1]
+
+https://blog.frankel.ch/faster-maven-builds/2/[Frankel blog 2]
+
+Use https://github.com/apache/maven-mvnd[maven daemon] for local builds:
+
+`mvnd install -DskipTest -DskipITs -o -q`
+
 ==== Java Flight Recorder/Java Mission Control
 
 Useful for capturing low level events from the JVM itself, as well as the application by way of custom JFR events. Boasts minimal impact on the runtime thus allowing it to be used continually in production.
@@ -21,3 +33,14 @@ Event dump can be viewed in Java Mission Control, which is a GUI application.
 
 * TODO: commands for capturing
 * TODO: jfr links
+
+== Linux
+
+=== Tools
+
+Additional tools/replacements for command line:
+
+* exa - replacement for ls
+* fzf - fuzzy search
+* ripgrep/ripgrep-all - rust base grep replacement
+* jq - deals with json - pipe json to jq for pretty print
