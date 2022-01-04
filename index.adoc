@@ -7,7 +7,62 @@
 
 == Java
 
-=== Language
+==== Annotation processor
+
+Create an annotation to be processed:
+[source,java]
+----
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.SOURCE)
+public @interface Sample {
+}
+----
+
+Extend `javax.annotation.processing.AbstractProcessor` and override at least the `proces` method. Example:
+[source,java]
+----
+@AutoService(Processor.class)
+public class SampleAnnotationProcessor extends AbstractProcessor {
+  private Messager messager;
+  private Filer filer;
+
+  @Override
+  public synchronized void init(final ProcessingEnvironment processingEnv) {
+    super.init(processingEnv);
+    this.messager = processingEnv.getMessager();
+    this.filer = processingEnv.getFiler();
+  }
+
+  @Override
+  public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+    // TODO: write processing code here
+    return true;
+  }
+
+  @Override
+  public Set<String> getSupportedAnnotationTypes() {
+    return Set.of(Sample.class.getCanonicalName());
+  }
+
+  @Override
+  public SourceVersion getSupportedSourceVersion() {
+    return SourceVersion.latestSupported();
+  }
+}
+----
+
+Note usage of https://github.com/google/auto/tree/master/service[Google's `@AutoService`] annotation which in itself serves as a processor target that creates the necessary `META-INF/services/javax.annotation-processing.Processor` file that lists the implementing class. This file can list multiple processors, one after the other (newline separated).
+
+`Messager` can be used to print diagnostic and other messages to output. `Filer` is used to i.e. output files as a result of processing (code generation).
+
+Notes:
+
+* annotations `@SupportedAnnotationTypes` and `@SupportedSourceVersion` can be used instead of overriding methods (on the processor implementation class)
+* processing can be done in multiple rounds, see `RoundEnvironment`
+
+Links:
+
+* https://github.com/gunnarmorling/awesome-annotation-processing[https://github.com/gunnarmorling/awesome-annotation-processing]
 
 === Tools
 
@@ -15,9 +70,8 @@
 
 Speeding up maven:
 
-https://blog.frankel.ch/faster-maven-builds/1/[Frankel blog 1]
-
-https://blog.frankel.ch/faster-maven-builds/2/[Frankel blog 2]
+* https://blog.frankel.ch/faster-maven-builds/1/[Frankel blog 1]
+* https://blog.frankel.ch/faster-maven-builds/2/[Frankel blog 2]
 
 Use https://github.com/apache/maven-mvnd[maven daemon] for local builds:
 
@@ -32,7 +86,14 @@ Events can be captured in a singular file dump or streamed (TODO: which java ver
 Event dump can be viewed in Java Mission Control, which is a GUI application.
 
 * TODO: commands for capturing
-* TODO: jfr links
+
+Links:
+
+* https://www.javaadvent.com/2021/12/keep-your-sql-in-check-with-flight-recorder-jmc-agent-and-jfrunit.html[Keep SQL in check] - use JFR to keep track of SQL related events. 
+** https://github.com/moditect/jfrunit[JFRUnit] for unit testing JRF events
+** Also introduces https://cryostat.io/[Cryostat] operator to securely manage JFR recordings in containerized environments
+
+
 
 == Linux
 
@@ -44,3 +105,7 @@ Additional tools/replacements for command line:
 * fzf - fuzzy search
 * ripgrep/ripgrep-all - rust base grep replacement
 * jq - deals with json - pipe json to jq for pretty print
+
+==== strace
+
+TODO: use strace to trace various happenings (I/O, network ...)

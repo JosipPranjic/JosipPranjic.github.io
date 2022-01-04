@@ -443,8 +443,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#truejava">1. Java</a>
-<ul class="sectlevel2">
-<li><a href="#truelanguage">1.1. Language</a></li>
+<ul class="sectlevel3">
+<li><a href="#trueannotation-processor">1.1. Annotation processor</a></li>
 <li><a href="#truetools">1.2. Tools</a>
 <ul class="sectlevel3">
 <li><a href="#truemaven">1.2.1. Maven</a></li>
@@ -455,7 +455,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#truelinux">2. Linux</a>
 <ul class="sectlevel2">
-<li><a href="#truetools-2">2.1. Tools</a></li>
+<li><a href="#truetools-2">2.1. Tools</a>
+<ul class="sectlevel3">
+<li><a href="#truestrace">2.1.1. strace</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -465,9 +469,83 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="truejava"><a class="anchor" href="#truejava"></a>1. Java</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="truelanguage"><a class="anchor" href="#truelanguage"></a>1.1. Language</h3>
+<div class="sect3">
+<h4 id="trueannotation-processor"><a class="anchor" href="#trueannotation-processor"></a>1.1. Annotation processor</h4>
+<div class="paragraph">
+<p>Create an annotation to be processed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.SOURCE)
+public @interface Sample {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Extend <code>javax.annotation.processing.AbstractProcessor</code> and override at least the <code>proces</code> method. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@AutoService(Processor.class)
+public class SampleAnnotationProcessor extends AbstractProcessor {
+  private Messager messager;
+  private Filer filer;
 
+  @Override
+  public synchronized void init(final ProcessingEnvironment processingEnv) {
+    super.init(processingEnv);
+    this.messager = processingEnv.getMessager();
+    this.filer = processingEnv.getFiler();
+  }
+
+  @Override
+  public boolean process(final Set&lt;? extends TypeElement&gt; annotations, final RoundEnvironment roundEnv) {
+    // TODO: write processing code here
+    return true;
+  }
+
+  @Override
+  public Set&lt;String&gt; getSupportedAnnotationTypes() {
+    return Set.of(Sample.class.getCanonicalName());
+  }
+
+  @Override
+  public SourceVersion getSupportedSourceVersion() {
+    return SourceVersion.latestSupported();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note usage of <a href="https://github.com/google/auto/tree/master/service">Google&#8217;s <code>@AutoService</code></a> annotation which in itself serves as a processor target that creates the necessary <code>META-INF/services/javax.annotation-processing.Processor</code> file that lists the implementing class. This file can list multiple processors, one after the other (newline separated).</p>
+</div>
+<div class="paragraph">
+<p><code>Messager</code> can be used to print diagnostic and other messages to output. <code>Filer</code> is used to i.e. output files as a result of processing (code generation).</p>
+</div>
+<div class="paragraph">
+<p>Notes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>annotations <code>@SupportedAnnotationTypes</code> and <code>@SupportedSourceVersion</code> can be used instead of overriding methods (on the processor implementation class)</p>
+</li>
+<li>
+<p>processing can be done in multiple rounds, see <code>RoundEnvironment</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Links:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/gunnarmorling/awesome-annotation-processing">https://github.com/gunnarmorling/awesome-annotation-processing</a></p>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect2">
 <h3 id="truetools"><a class="anchor" href="#truetools"></a>1.2. Tools</h3>
@@ -476,11 +554,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>Speeding up maven:</p>
 </div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p><a href="https://blog.frankel.ch/faster-maven-builds/1/">Frankel blog 1</a></p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p><a href="https://blog.frankel.ch/faster-maven-builds/2/">Frankel blog 2</a></p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Use <a href="https://github.com/apache/maven-mvnd">maven daemon</a> for local builds:</p>
@@ -505,8 +587,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li>
 <p>TODO: commands for capturing</p>
 </li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Links:</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
-<p>TODO: jfr links</p>
+<p><a href="https://www.javaadvent.com/2021/12/keep-your-sql-in-check-with-flight-recorder-jmc-agent-and-jfrunit.html">Keep SQL in check</a> - use JFR to keep track of SQL related events.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/moditect/jfrunit">JFRUnit</a> for unit testing JRF events</p>
+</li>
+<li>
+<p>Also introduces <a href="https://cryostat.io/">Cryostat</a> operator to securely manage JFR recordings in containerized environments</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
@@ -538,13 +637,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </div>
+<div class="sect3">
+<h4 id="truestrace"><a class="anchor" href="#truestrace"></a>2.1.1. strace</h4>
+<div class="paragraph">
+<p>TODO: use strace to trace various happenings (I/O, network &#8230;&#8203;)</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-12-25 11:31:19 +0100
+Last updated 2022-01-04 12:28:51 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
