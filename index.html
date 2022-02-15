@@ -448,7 +448,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truetools">1.2. Tools</a>
 <ul class="sectlevel3">
 <li><a href="#truemaven">1.2.1. Maven</a></li>
-<li><a href="#truejava-flight-recorderjava-mission-control">1.2.2. Java Flight Recorder/Java Mission Control</a></li>
+<li><a href="#trueopenjdk-tools">1.2.2. OpenJDK tools</a></li>
+<li><a href="#truejava-flight-recorderjava-mission-control">1.2.3. Java Flight Recorder/Java Mission Control</a></li>
 </ul>
 </li>
 </ul>
@@ -572,7 +573,85 @@ public class SampleAnnotationProcessor extends AbstractProcessor {
 </div>
 </div>
 <div class="sect3">
-<h4 id="truejava-flight-recorderjava-mission-control"><a class="anchor" href="#truejava-flight-recorderjava-mission-control"></a>1.2.2. Java Flight Recorder/Java Mission Control</h4>
+<h4 id="trueopenjdk-tools"><a class="anchor" href="#trueopenjdk-tools"></a>1.2.2. OpenJDK tools</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>jps</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jps -m</code> - list Java processes with arguments to main()</p>
+</li>
+<li>
+<p><code>jps -v</code> - list Java processes with JVM variables</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>jinfo</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jinfo -flags &lt;PID&gt;</code> - list JVM args</p>
+</li>
+<li>
+<p><code>jinfo -flag UseG1GC &lt;PID&gt;</code> - list 'UseG1GC' flag value</p>
+</li>
+<li>
+<p><code>jinfo -sysprops &lt;PID&gt;</code> - list system properties</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>jmap</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jmap -histo:live &lt;PID&gt; &gt; histo.log</code> - print heap histogram</p>
+</li>
+<li>
+<p><code>jmap -dump:live,format=b,file=heap.bin &lt;PID&gt;</code> - heap dump</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>jstack</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jstack -e &lt;PID&gt; &gt; td.txt</code> - thread dump</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>jcmd</p>
+</li>
+<li>
+<p>jhsdb</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jhsdb clhsdb --core blabla_core.dump --exe /path/to/jdk/bin/java</code> - debugging core dump</p>
+</li>
+<li>
+<p><code>jhsdb hsdb &#8230;&#8203;</code> - UI</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>jcb - Java command line debugger</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truejava-flight-recorderjava-mission-control"><a class="anchor" href="#truejava-flight-recorderjava-mission-control"></a>1.2.3. Java Flight Recorder/Java Mission Control</h4>
 <div class="paragraph">
 <p>Useful for capturing low level events from the JVM itself, as well as the application by way of custom JFR events. Boasts minimal impact on the runtime thus allowing it to be used continually in production.</p>
 </div>
@@ -649,7 +728,7 @@ public class SampleAnnotationProcessor extends AbstractProcessor {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-01-04 12:28:51 +0100
+Last updated 2022-02-15 14:44:43 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

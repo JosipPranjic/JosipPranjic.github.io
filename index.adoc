@@ -77,6 +77,31 @@ Use https://github.com/apache/maven-mvnd[maven daemon] for local builds:
 
 `mvnd install -DskipTest -DskipITs -o -q`
 
+==== OpenJDK tools
+
+* jps
+** `jps -m` - list Java processes with arguments to main()
+** `jps -v` - list Java processes with JVM variables
+
+* jinfo
+** `jinfo -flags <PID>` - list JVM args
+** `jinfo -flag UseG1GC <PID>` - list 'UseG1GC' flag value
+** `jinfo -sysprops <PID>` - list system properties
+
+* jmap
+** `jmap -histo:live <PID> > histo.log` - print heap histogram
+** `jmap -dump:live,format=b,file=heap.bin <PID>` - heap dump
+
+* jstack
+** `jstack -e <PID> > td.txt` - thread dump
+
+* jcmd
+* jhsdb
+** `jhsdb clhsdb --core blabla_core.dump --exe /path/to/jdk/bin/java` - debugging core dump
+** `jhsdb hsdb ...` - UI
+
+* jcb - Java command line debugger
+
 ==== Java Flight Recorder/Java Mission Control
 
 Useful for capturing low level events from the JVM itself, as well as the application by way of custom JFR events. Boasts minimal impact on the runtime thus allowing it to be used continually in production.
